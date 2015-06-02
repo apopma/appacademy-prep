@@ -1,8 +1,10 @@
 def remix(ingredients)
   # thanks to j. latimer for the new_cocktails.none? logic
-  liquors = ingredients.map { |combo| combo[0] }
-  mixers = ingredients.map { |combo| combo[1] }
-  new_cocktails = ingredients             # initializing it as [] breaks #none?
+  # for the adventurous: liquors, mixers = ingredients.transpose
+  
+  liquors = ingredients.map(&:first)
+  mixers = ingredients.map(&:last)
+  new_cocktails = make_new_cocktails(liquors, mixers)
   
   until new_cocktails.none? { |mix| ingredients.include?(mix) }
     new_cocktails = make_new_cocktails(liquors, mixers)
