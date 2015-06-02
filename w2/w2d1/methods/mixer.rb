@@ -1,14 +1,30 @@
 def remix(ingredients)
-  # doesn't guarantee unique pairing cf. input, but DOES ensure 1:1 matches
-  liquors = ingredients.map { |combo| combo[0] }.shuffle
-  mixers = ingredients.map { |combo| combo[1] }.shuffle
+  # thanks to j. latimer for the new_cocktails.none? logic
+  liquors = ingredients.map { |combo| combo[0] }
+  mixers = ingredients.map { |combo| combo[1] }
+  new_cocktails = ingredients             # initializing it as [] breaks #none?
   
-  ingredients.map { |combo| [liquors.shift, mixers.shift] }
+  until new_cocktails.none? { |mix| ingredients.include?(mix) }
+    new_cocktails = make_new_cocktails(liquors, mixers)
+  end
+  new_cocktails
 end
 
 
-p remix([
-  ["rum", "coke"],
-  ["gin", "tonic"],
-  ["scotch", "soda"]
-]) if __FILE__ == $PROGRAM_NAME
+def make_new_cocktails(liquors, mixers)
+  liquors.shuffle!
+  mixers.shuffle!
+  
+  liquors.map.with_index do |liquor, idx|
+    [liquor, mixers[idx]]
+  end
+end
+
+
+if __FILE__ == $PROGRAM_NAME
+  p new_drinks = remix([
+    ["rum", "coke"],
+    ["gin", "tonic"],
+    ["scotch", "soda"]
+  ])
+end
