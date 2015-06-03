@@ -5,7 +5,7 @@ class RPNCalculator                           # aA pair project, w2d2
   def initialize
     @calculator = []
     @tokens = []
-    @operators = ['+', '-', '*', '/', '**', '%']
+    @Operators = ['+', '-', '*', '/', '**', '%']
   end
 
 
@@ -21,28 +21,19 @@ class RPNCalculator                           # aA pair project, w2d2
 
 
   def operate(operator)
-    #puts "Operating with operator #{operator}, class #{operator.class}"
-    case operator
-    when :+
-      self.plus
-    when :-
-      self.minus
-    when :*
-      self.times
-    when :/
-      self.divide
-    when :**
-      self.exp
-    when :%
-      self.mod
-    else
-      raise NoMethodError, "\nUndefined operator #{operator}"
-    end
+    raise ArgumentError, 'calculator is empty' if @calculator.empty?
+    b = @calculator.pop
+    a = @calculator.pop
+    @calculator.push(a.to_f.send(operator, b.to_f))
   end
 
 
+# ----------------------------------------------------------------------------
+# below methods are only here to make the tests pass
+# RPNCalculator#operate can handle all of these plus string evaluations
+
   def plus
-    raise "calculator is empty" if @calculator.empty?
+    raise ArgumentError, 'calculator is empty' if @calculator.empty?
     b = @calculator.pop
     a = @calculator.pop
     @calculator.push(a + b)
@@ -50,7 +41,7 @@ class RPNCalculator                           # aA pair project, w2d2
 
 
   def minus
-    raise "calculator is empty" if @calculator.empty?
+    raise ArgumentError, 'calculator is empty' if @calculator.empty?
     b = @calculator.pop
     a = @calculator.pop
     @calculator.push(a - b)
@@ -58,7 +49,7 @@ class RPNCalculator                           # aA pair project, w2d2
 
 
   def times
-    raise "calculator is empty" if @calculator.empty?
+    raise ArgumentError, 'calculator is empty' if @calculator.empty?
     b = @calculator.pop
     a = @calculator.pop
     @calculator.push(a * b)
@@ -66,7 +57,7 @@ class RPNCalculator                           # aA pair project, w2d2
 
 
   def divide
-    raise "calculator is empty" if @calculator.empty?
+    raise ArgumentError, 'calculator is empty' if @calculator.empty?
     b = @calculator.pop.to_f
     a = @calculator.pop.to_f
     @calculator.push(a / b)
@@ -74,7 +65,7 @@ class RPNCalculator                           # aA pair project, w2d2
 
 
   def exp
-    raise "calculator is empty" if @calculator.empty?
+    raise ArgumentError, 'calculator is empty' if @calculator.empty?
     b = @calculator.pop
     a = @calculator.pop
     @calculator.push(a ** b)
@@ -82,16 +73,18 @@ class RPNCalculator                           # aA pair project, w2d2
 
 
   def mod
-    raise "calculator is empty" if @calculator.empty?
+    raise ArgumentError, 'calculator is empty' if @calculator.empty?
     b = @calculator.pop
     a = @calculator.pop
     @calculator.push(a % b)
   end
-
+  
+# -----------------------------------------------------------------------------
 
   def tokens(string)
+    # should be 'tokenize' but that breaks the specs
     string.split(' ').each do |token|
-      if @operators.include?(token)
+      if @Operators.include?(token)
         @tokens << token.to_sym
       else
         @tokens << token.to_i
@@ -115,7 +108,7 @@ class RPNCalculator                           # aA pair project, w2d2
       #puts "Calculator stack: #{@calculator.to_s}"
     end
 
-    return self.value
+    self.value
   end
 end
 
@@ -148,5 +141,6 @@ if __FILE__ == $PROGRAM_NAME
     else
       puts calculator.evaluate(args_array.join(""))
     end
+    
   end
 end
