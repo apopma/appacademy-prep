@@ -144,7 +144,7 @@ if __FILE__ == $PROGRAM_NAME
     end 
     
     if args_array.empty?
-      puts "no arguments entered, please try again"
+      puts "No arguments entered, please try again"
     else
       puts calculator.evaluate(args_array.join(""))
     end
