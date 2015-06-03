@@ -35,4 +35,4 @@ class GuessingGame
   end
 end
 
-GuessingGame.new.play if __FILE__ == $PROGRAM_NAME
+GuessingGame.new.play if __FILE__ == $PROGRAM_NAME  
