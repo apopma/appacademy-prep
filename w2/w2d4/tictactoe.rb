@@ -60,9 +60,9 @@ class Board
   
   def empty_spaces
     empties = []
-    @grid.each_with_index do |row, row_idx|
-      row.each_with_index do |col, col_idx|
-        empties << [row_idx, col_idx] if self[row][col].nil?
+    (0..2).each do |row|
+      (0..2).each do |col|
+        empties << [row, col] if @grid[row][col].nil?
       end
     end
     empties
@@ -100,14 +100,15 @@ class Game
   end
   
   def play
+    @board.display
     while true
       @players.each_with_index do |player, idx|
         puts "It's player #{idx + 1}'s turn. (#{player.mark})"
-        @board.display
         
         mark = player.mark
         coords = player.move(@board)
         @board.place_mark(coords, mark)
+        @board.display
           
         if @board.won?(mark)
           puts "#{mark.upcase} wins the game!"
@@ -157,14 +158,15 @@ class ComputerPlayer
   
   
   def move(board)
-    can_win?(board) ? make_winning_move : make_random_move
+    #byebug
+    can_win?(board) ? make_winning_move(board) : make_random_move
   end
   
-  def make_winning_move
+  def make_winning_move(board)
     empties = board.empty_spaces
     empties.each do |empty_space|
       board.place_mark(empty_space, @mark)
-      return empty_space if board.won?
+      return empty_space if board.won?(@mark)
     end
     puts "Something went wrong! make_winning_move should always win!"
   end
@@ -177,15 +179,17 @@ class ComputerPlayer
   
   def can_win?(board)
     empties = board.empty_spaces
+    
     empties.each do |empty_space|
       board.place_mark(empty_space, @mark)
-      if board.won?
-        return true
-      else
+      if board.won?(@mark)
         board.place_mark(empty_space, nil)
+        return true
       end
-      false
+      board.place_mark(empty_space, nil)
     end
+    
+    return false
   end
 end
   
