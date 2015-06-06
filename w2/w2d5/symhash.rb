@@ -4,10 +4,11 @@ def super_print(string, args = {})
                  reverse: false }
     options = defaults.merge(args)
     
-    string.upcase! if options[:upcase]
-    string.reverse! if options[:reverse]
+    new_string = string
+    new_string.upcase! if options[:upcase]
+    new_string.reverse! if options[:reverse]
     
-    options[:times].times {print string + ' '}
+    options[:times].times {print new_string + ' '}
     puts "\n"   # is there a nicer-looking way to insert this \n?
 end
 
