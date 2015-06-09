@@ -10,6 +10,7 @@ class Dictionary
   end
   
   def keywords
+    # returns @dict keys sorted alphabetically
     @dict.keys.sort
   end
   
@@ -34,30 +35,19 @@ class Dictionary
   
   
   def find(key)
-    key_regex = /^((#{key})\w*)/
-    found = {}
-    @dict.each do |entry, description|
-      found[entry] = description if entry =~ key_regex && @dict[entry]
-    end
-    found
+    @dict.select { |entry, desc| entry.match(key) && @dict[entry] }
   end
   
   
   def sort
-    # Returns a new Hash; @dict sorted alphabetically by keys
-    # Replaces nil in entries without a description with ''
-    # Does not mutate @dict
-    
-    sorted_entries = self.keywords
-    sorted_descriptions = sorted_entries.map { |entry| @dict[entry] }
-    Hash[sorted_entries.zip sorted_descriptions]
+    sorted_descriptions = keywords.map { |entry| @dict[entry] }
+    Hash[keywords.zip sorted_descriptions]
   end  
   
   
   def printable
-    sorted = self.sort
     output = ""
-    sorted.each { |entry, desc| output << "[#{entry}] \"#{desc}\"\n" }
+    sort.each { |entry, desc| output << "[#{entry}] \"#{desc}\"\n" }
     output.chomp
   end
 end
