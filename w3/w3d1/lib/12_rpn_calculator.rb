@@ -1,6 +1,5 @@
 class RPNCalculator                           # aA pair project, w2d2
   attr_accessor :calculator, :tokens          # Edward Huang - Adam Popma
-  # thank you Wikipedia
 
   def initialize
     @calculator = []
@@ -24,7 +23,7 @@ class RPNCalculator                           # aA pair project, w2d2
     raise ArgumentError, 'calculator is empty' if @calculator.empty?
     b = @calculator.pop
     a = @calculator.pop
-    @calculator.push(a.to_f.send(operator, b.to_f))
+    push(a.send(operator, b))
   end
 
 
@@ -36,7 +35,7 @@ class RPNCalculator                           # aA pair project, w2d2
     raise ArgumentError, 'calculator is empty' if @calculator.empty?
     b = @calculator.pop
     a = @calculator.pop
-    @calculator.push(a + b)
+    push(a + b)
   end
 
 
@@ -44,7 +43,7 @@ class RPNCalculator                           # aA pair project, w2d2
     raise ArgumentError, 'calculator is empty' if @calculator.empty?
     b = @calculator.pop
     a = @calculator.pop
-    @calculator.push(a - b)
+    push(a - b)
   end
 
 
@@ -52,7 +51,7 @@ class RPNCalculator                           # aA pair project, w2d2
     raise ArgumentError, 'calculator is empty' if @calculator.empty?
     b = @calculator.pop
     a = @calculator.pop
-    @calculator.push(a * b)
+    push(a * b)
   end
 
 
@@ -60,7 +59,7 @@ class RPNCalculator                           # aA pair project, w2d2
     raise ArgumentError, 'calculator is empty' if @calculator.empty?
     b = @calculator.pop.to_f
     a = @calculator.pop.to_f
-    @calculator.push(a / b)
+    push(a / b)
   end
 
 
@@ -68,7 +67,7 @@ class RPNCalculator                           # aA pair project, w2d2
     raise ArgumentError, 'calculator is empty' if @calculator.empty?
     b = @calculator.pop
     a = @calculator.pop
-    @calculator.push(a ** b)
+    push(a ** b)
   end
 
 
@@ -76,7 +75,7 @@ class RPNCalculator                           # aA pair project, w2d2
     raise ArgumentError, 'calculator is empty' if @calculator.empty?
     b = @calculator.pop
     a = @calculator.pop
-    @calculator.push(a % b)
+    push(a % b)
   end
   
 # -----------------------------------------------------------------------------
@@ -87,7 +86,7 @@ class RPNCalculator                           # aA pair project, w2d2
       if @Operators.include?(token)
         @tokens << token.to_sym
       else
-        @tokens << token
+        @tokens << token.to_f
       end
     end
     return @tokens
@@ -95,22 +94,17 @@ class RPNCalculator                           # aA pair project, w2d2
 
 
   def evaluate(string)
-    self.tokens(string)
-    #puts "Tokens: #{@tokens.to_s}"
+    tokens(string)
 
     @tokens.each do |token|
-      #puts "\nCurrent token #{token}, class #{token.class}"
       if token.class == Symbol
-        puts "Operating using #{token}"
-        self.operate(token)
+        operate(token)
       else
-        puts "calculator got #{token}"
-        @calculator.push(token)
+        push(token)
       end
-      #puts "Calculator stack: #{@calculator.to_s}"
     end
 
-    self.value
+    value
   end
 end
 
@@ -124,7 +118,8 @@ if __FILE__ == $PROGRAM_NAME
   if !ARGV.empty? 
     # run the arguments specified in ARGV
     File.foreach(ARGV[0]) do |line|
-      puts calculator.evaluate(line)
+      ans = calculator.evaluate(line)
+      ans == ans.to_i ? (puts ans.to_i) : (puts ans)
     end
     
   else #accept user input and evaluate it
