@@ -1,5 +1,5 @@
-class Code
-  attr_accessor :cipher
+class Code                              # aA pair project: w3d2
+  attr_accessor :cipher                 # Adam Popma - Carl Maxwell
   
   def initialize(code_string = nil)
     @cipher = parse_input(code_string)
