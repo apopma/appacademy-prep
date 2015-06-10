@@ -59,17 +59,21 @@ class Code
       other_cipher[idx] == cipher[idx]
     end
     
-    #returns the number of characters in the other Code included in this Code
+    # returns the number of characters in the other Code included in this Code
+    # replaces partial matches that are located with '-'
     cipher_without_exacts.each_with_index do |char, idx|
       if other_cipher_without_exacts.include?(char)
-        num_of_matches += 1
+        match_index = other_cipher_without_exacts.index(char) 
+        
         cipher_without_exacts[idx] = '-'
-        other_cipher_without_exacts[ other_cipher_without_exacts.index(char) ] = '-'
-        #above .index(char) statement returns the first index char is found at
+        other_cipher_without_exacts[match_index] = '-'
+        num_of_matches += 1
+        #match_index returns the first index char is found at
       end
     end
     num_of_matches
   end
+  
 end
 
 # -----------------------------------------------------------------------------
@@ -124,7 +128,8 @@ class Game
   
   
   def valid_guess?(guess)
-    guess.length == 4 && guess.split("").all? { |char| Code::symbols.include?(char.to_sym) }
+    guess.length == 4 && 
+    guess.split("").all? { |char| Code::symbols.include?(char.to_sym) }
   end
   
 end
@@ -135,7 +140,5 @@ def invoke
   puts "Welcome to Mastermind!"
   Game.new.play
 end
-
-
 
 invoke if __FILE__ == $PROGRAM_NAME
