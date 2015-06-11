@@ -43,8 +43,8 @@ class Board
   end
   
   def fire_on(pos)
-    raise "#{pos} was fired on already! no bueno!" if fired_on?(pos)
-    if self[*pos] == :ship
+    puts "#{pos} was fired on already!" if fired_on?(pos)
+    if self[*pos] == :ship || self[*pos] == :hit
       puts "KABLOOEY!"
       self[*pos] = :hit
     else
