@@ -1,5 +1,5 @@
-require_relative "human_player.rb"
-require_relative "computer_player.rb"
+require_relative "human_player.rb"        # aA pair project: w3d4
+require_relative "computer_player.rb"     # Adam Popma - Jonathan Elofson
 
 class Hangman
   attr_reader :dictionary, :secret_length,
