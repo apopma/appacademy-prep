@@ -24,30 +24,37 @@ class HumanPlayer
 
   
   def guess
-      print "> "
-      guess = gets.chomp.downcase
-      puts "Sorry, I didn't understand that." unless guess =~ INPUT_REGEX
-    guess
+    # can't sanity test with an until loop, stack level too deep
+      print "What's your guess? (one character only) > "
+      human_guess = gets.chomp.downcase
+      puts "I didn't understand that. Too bad!" unless human_guess =~ INPUT_REGEX
+    human_guess
   end
   
   
   def handle_guess_response(computer_guess)
-    # 
-    puts "The computer guesses #{computer_guess}."
-    puts "What indices does this letter occur at?"
+    # Relies on the user being honest
+    puts "The computer guesses #{computer_guess.upcase}."
+    puts "What positions does this letter occur at?"
     puts "Enter all of them, separated by spaces."
     puts "(Just hit Enter if the answer is 'none of them'.)"
     print "> "
     guess_locations = gets.chomp.scan(GUESS_CHECKING_REGEX).flatten
-    guess_locations.map! { |x| x.to_i }
+    guess_locations.map! { |x| (x.to_i) - 1 }
   end
+  
   
   def won?(guess)
     # gets passed the current partial
     if guess.split('').none? {|char| char == '_' }
-      puts "Did the computer guess correctly?"
-      gets.chomp == "y" ? true : false
+      print "Is the answer '#{guess}'? (y/n) > "
+      gets.chomp.downcase == "y" ? true : false
     end
   end
   
+  
+  def filter_by_letters(useless, args)
+    # only relevant for a ComputerPlayer,
+    # but the Hangman class shouldn't care what Player it gets
+  end
 end
