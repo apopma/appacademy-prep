@@ -1,8 +1,11 @@
+require 'byebug'
+
 class MazeSolver
   # http://www.policyalmanac.org/games/aStarTutorial.htm
-  attr_reader :maze, :start, :finish, :location,
+  attr_reader :maze, :start, :finish,
               :open_list, :closed_list, :parent,
-              :movement_cost, :heuristic_cost, :score
+              :movement_cost, :heuristic_cost, :net_movement_cost
+  attr_accessor :location
               
   MOVE_COST_ORTHO = 10
   MOVE_COST_DIAG  = 14
@@ -34,7 +37,7 @@ class MazeSolver
     maze.each {|line| puts line.join}
     puts "start location is #{start}"
     puts "ending location is #{finish}"
-    puts "current location is #{location}"
+    puts "current location is #{@location}"
   end
   
   def listing
@@ -42,6 +45,18 @@ class MazeSolver
     p "closed cells: #{closed_list}"
     p "parents: #{parent}"
   end
+  
+  
+  def solve
+    display
+    initial_pathfind
+    choose_next_cell
+    display
+    
+    pathfind until closed_list.include?(finish)
+    puts "solve is done pathfinding! omg"
+  end
+  
   
   def ortho?(source, dest)
     # one coord pair unchanged
@@ -103,20 +118,46 @@ class MazeSolver
     # Adds all reachable cells from @start to the open list,
     # and moves @start to the closed list.
     # Cells have their pos and the adding cell (@start) saved to @parents.
-    reachable_cells.each do |cell| 
-      open_list << cell
-      parent[cell] = start
+    reachable_cells.each do |reachable_cell| 
+      open_list << reachable_cell
+      parent[reachable_cell] = start
     end
     open_list.delete(location)
     closed_list << location
   end
+  
+  
+  def pathfind
+    open_list.delete(location)
+    closed_list << location
+    
+    reachable_cells.each do |reachable_cell|
+      if !(open_list.include?(reachable_cell))
+        open_list << reachable_cell 
+        parent[reachable_cell] = location
+        
+      elsif open_list.include?(reachable_cell)
+##############################???????#################################
+        puts "this space for rent"
+      end
+      
+    end
+  
+    
+    
+    puts "i'm pathfinding!"
+    closed_list << finish
+  end
     
   
   def choose_next_cell
+    # why does this need to be @location here and in #display, but nowhere else?
     calculate_movement_costs(open_list)
     estimate_heuristic_costs(open_list)
-    calculate_
+    calculate_net_costs(open_list)
     
+    @location = net_movement_cost.key(net_movement_cost.values.min)
+    self[*location] = "•"
   end
   
   def calculate_movement_costs(cells)
@@ -131,7 +172,6 @@ class MazeSolver
   end
   
   def estimate_heuristic_costs(cells)
-    p cells
     # when each-ing through cell, elements are Fixnum instead of Array. ???
     cells.each do |cell|
       manhattan_cost = 0
@@ -142,12 +182,15 @@ class MazeSolver
     end
   end
   
+  def calculate_net_costs(cells)
+    cells.each do |cell|
+      net_movement_cost[cell] = (movement_cost[cell] + heuristic_cost[cell])
+      p "F score for #{cell} was #{net_movement_cost[cell]}"
+    end
+  end
+  
 end
 
 test = MazeSolver.new
 
-test.display
-test.initial_pathfind
-test.listing
-puts
-test.choose_next_cell
+test.solve
