@@ -16,9 +16,10 @@ class MazeSolver
     @open_list = [start]
     @closed_list = []
     
-    @parent = {}                  #pos => parent's pos
-    @movement_cost = {start => 0} #pos => cost to move there from @start
-    @heuristic_cost = {}          #pos => manhattan cost
+    @parent =            {}           #pos => parent's pos
+    @movement_cost =     {start => 0} #pos => cost to move there from @start
+    @heuristic_cost =    {}           #pos => manhattan cost
+    @net_movement_cost = {}           #pos => movement + heuristic costs
   end
   
   def [](row, col)
@@ -114,7 +115,7 @@ class MazeSolver
   def choose_next_cell
     calculate_movement_costs(open_list)
     estimate_heuristic_costs(open_list)
-    
+    calculate_
     
   end
   
