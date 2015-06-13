@@ -130,6 +130,8 @@ class MazeSolver
   
   
   def pathfind
+    puts "i'm pathfinding!"
+    
     open_list.delete(location)
     closed_list << location unless closed_list.include?(location)
     
@@ -147,11 +149,6 @@ class MazeSolver
     end
     
     choose_next_cell
-    display
-    p "open list: #{open_list}"
-    p "closed list: #{closed_list}"
-    
-    puts "i'm pathfinding!"
   end
   
   
@@ -199,11 +196,19 @@ class MazeSolver
     calculate_net_costs(open_list)
     
     puts "movement costs: #{net_movement_cost.sort}"
+    p "open list: #{open_list}"
+    p "closed list: #{closed_list}"
     
-    net_movement_cost.each do |pos, val|
-      if pos != @location && val == net_movement_cost.values.min
-        @location = net_movement_cost.key(val) unless closed_list.include?(pos)
-        puts "the next location is #{net_movement_cost.key(val)}"
+    candidate_locations = net_movement_cost.reject do |pos, val|
+      net_movement_cost.keys.include?(pos) && pos == @location
+    end
+    
+    p candidate_locations
+    
+    candidate_locations.each do |pos, val|
+      if val == candidate_locations.values.min
+        puts "the next location is #{candidate_locations.key(val)}"
+        @location = candidate_locations.key(val)
         self[*location] = "•"
         return
       end
@@ -227,7 +232,7 @@ class MazeSolver
       manhattan_cost = 0
       manhattan_cost += (cell[0] - finish[0]).abs
       manhattan_cost += (cell[1] - finish[1]).abs
-      p "manhattan cost for #{cell} was #{manhattan_cost}"
+      #p "manhattan cost for #{cell} was #{manhattan_cost}"
       heuristic_cost[cell] = manhattan_cost * MOVE_COST_ORTHO
     end
   end
@@ -235,7 +240,7 @@ class MazeSolver
   def calculate_net_costs(cells)
     cells.each do |cell|
       net_movement_cost[cell] = (movement_cost[cell] + heuristic_cost[cell])
-      p "F score for #{cell} was #{net_movement_cost[cell]}"
+      #p "F score for #{cell} was #{net_movement_cost[cell]}"
     end
   end
   
