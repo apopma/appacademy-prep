@@ -137,7 +137,7 @@ class MazeSolver
         parent[reachable_cell] = location
         
       elsif open_list.include?(reachable_cell)
-##############################???????#################################
+        update_path_costs(reachable_cell)
         puts "this space for rent"
       end
       
@@ -148,6 +148,11 @@ class MazeSolver
     puts "i'm pathfinding!"
     closed_list << finish
   end
+  
+  def update_path_costs(cell)
+    #only takes one cell, and doesn't immediately update movement_cost
+    
+  end
     
   
   def choose_next_cell
@@ -156,6 +161,7 @@ class MazeSolver
     estimate_heuristic_costs(open_list)
     calculate_net_costs(open_list)
     
+    puts "the next cell is #{net_movement_cost.key(net_movement_cost.values.min)}"
     @location = net_movement_cost.key(net_movement_cost.values.min)
     self[*location] = "•"
   end
