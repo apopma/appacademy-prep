@@ -196,20 +196,25 @@ class MazeSolver
     calculate_net_costs(open_list)
     
     puts "movement costs: #{net_movement_cost.sort}"
+    puts "reachable cells: #{reachable_cells}"
     p "open list: #{open_list}"
     p "closed list: #{closed_list}"
     
+    candidate_locations = {} #pos => movement cost
     candidate_locations = net_movement_cost.reject do |pos, val|
-      net_movement_cost.keys.include?(pos) && pos == @location
+      pos == @location          || 
+      closed_list.include?(pos) ||
+      !(reachable_cells.include?(pos))
     end
     
-    p candidate_locations
+    p "list of candidates: #{candidate_locations}"
     
-    candidate_locations.each do |pos, val|
-      if val == candidate_locations.values.min
-        puts "the next location is #{candidate_locations.key(val)}"
-        @location = candidate_locations.key(val)
+    candidate_locations.each do |pos, cost|
+      if candidate_locations[pos] == candidate_locations.values.min
+        puts "the next location is #{pos}"
+        @location = pos
         self[*location] = "•"
+        candidate_locations.clear
         return
       end
     end
