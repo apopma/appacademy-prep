@@ -57,6 +57,7 @@ class MazeSolver
       pathfind
       display
     end
+    puts "pathfind is done! zomg"
   end
   
   
@@ -134,6 +135,7 @@ class MazeSolver
     
     open_list.delete(location)
     closed_list << location unless closed_list.include?(location)
+    return if location == finish
     
     reachable_cells.each do |reachable_cell|
       if open_list.include?(reachable_cell)
@@ -202,9 +204,7 @@ class MazeSolver
     
     candidate_locations = {} #pos => movement cost
     candidate_locations = net_movement_cost.reject do |pos, val|
-      pos == @location          || 
-      closed_list.include?(pos) ||
-      !(reachable_cells.include?(pos))
+      pos == @location || !open_list.include?(pos)
     end
     
     p "list of candidates: #{candidate_locations}"
@@ -213,7 +213,7 @@ class MazeSolver
       if candidate_locations[pos] == candidate_locations.values.min
         puts "the next location is #{pos}"
         @location = pos
-        self[*location] = "•"
+        self[*location] = "•" unless self[*location] == 'E'
         candidate_locations.clear
         return
       end
