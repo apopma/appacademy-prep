@@ -1,9 +1,11 @@
 class MazeSolver
   # http://www.policyalmanac.org/games/aStarTutorial.htm
   attr_reader :maze, :start, :finish, :location,
-              :open_list, :closed_list, :parents
-  MOVE_ORTHO = 10
-  MOVE_DIAG  = 14
+              :open_list, :closed_list, :parent,
+              :movement_cost, :heuristic_cost, :score
+              
+  MOVE_COST_ORTHO = 10
+  MOVE_COST_DIAG  = 14
   
   def initialize
     @maze   = parse(File.readlines(ARGV[0]))
@@ -14,7 +16,9 @@ class MazeSolver
     @open_list = [start]
     @closed_list = []
     
-    @parents = {} #pos => parent's pos
+    @parent = {}                  #pos => parent's pos
+    @movement_cost = {start => 0} #pos => cost to move there from @start
+    @heuristic_cost = {}          #pos => manhattan cost
   end
   
   def [](row, col)
@@ -35,7 +39,7 @@ class MazeSolver
   def listing
     p "open cells: #{open_list}"
     p "closed cells: #{closed_list}"
-    p "parents: #{parents}"
+    p "parents: #{parent}"
   end
   
   def ortho?(source, dest)
@@ -100,7 +104,7 @@ class MazeSolver
     # Cells have their pos and the adding cell (@start) saved to @parents.
     reachable_cells.each do |cell| 
       open_list << cell
-      parents[cell] = start
+      parent[cell] = start
     end
     open_list.delete(location)
     closed_list << location
@@ -109,10 +113,32 @@ class MazeSolver
   
   def choose_next_cell
     calculate_movement_costs(open_list)
+    estimate_heuristic_costs(open_list)
+    
+    
   end
   
   def calculate_movement_costs(cells)
-    
+    cells.each do |cell|
+      if ortho?(cell, parent[cell])
+        movement_cost[cell] = movement_cost[parent[cell]] + MOVE_COST_ORTHO
+        
+      elsif diagonal?(cell, parent[cell])
+        movement_cost[cell] = movement_cost[parent[cell]] + MOVE_COST_DIAG
+      end
+    end
+  end
+  
+  def estimate_heuristic_costs(cells)
+    p cells
+    # when each-ing through cell, elements are Fixnum instead of Array. ???
+    cells.each do |cell|
+      manhattan_cost = 0
+      manhattan_cost += (cell[0] - finish[0]).abs
+      manhattan_cost += (cell[1] - finish[1]).abs
+      p "manhattan cost for #{cell} was #{manhattan_cost}"
+      heuristic_cost[cell] = manhattan_cost * MOVE_COST_ORTHO
+    end
   end
   
 end
@@ -123,9 +149,4 @@ test.display
 test.initial_pathfind
 test.listing
 puts
-puts test.ortho?([5, 5], [4, 4]) #false
-puts test.ortho?([5, 5], [4, 5])  #true
-puts test.ortho?([5, 5], [5, 4])  #true
-puts test.diagonal?([5, 5], [4, 5]) #false
-puts test.diagonal?([5, 5], [4, 4]) #true
-puts test.diagonal?([5, 5], [6, 4]) #true
+test.choose_next_cell
