@@ -201,8 +201,8 @@ class MazeSolver
     puts "movement costs: #{net_movement_cost.sort}"
     
     net_movement_cost.each do |pos, val|
-      if pos != @location && val == net_movement_cost.values.min && !closed_list.include?(pos)
-        @location = net_movement_cost.key(val)
+      if pos != @location && val == net_movement_cost.values.min
+        @location = net_movement_cost.key(val) unless closed_list.include?(pos)
         puts "the next location is #{net_movement_cost.key(val)}"
         self[*location] = "•"
         return
