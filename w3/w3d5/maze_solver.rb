@@ -101,7 +101,7 @@ class MazeSolver
   
   def reachable_cells
     # Returns an array of all reachable cells from @location,
-    # ignoring walls, and cells on the closed list.
+    # ignoring walls and cells on the closed list. Breaks if given a 0 location.
     curr_row = location[0]
     curr_col = location[1]
     
