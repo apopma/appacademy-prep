@@ -1,4 +1,5 @@
 class MazeSolver
+  # http://www.policyalmanac.org/games/aStarTutorial.htm
   attr_reader :maze, :start, :finish, :location,
               :open_list, :closed_list, :parents
   MOVE_ORTHO = 10
@@ -35,6 +36,22 @@ class MazeSolver
     p "open cells: #{open_list}"
     p "closed cells: #{closed_list}"
     p "parents: #{parents}"
+  end
+  
+  def ortho?(source, dest)
+    # one coord pair unchanged
+    source.each_index do |idx|
+      return true if source[idx] - dest[idx] == 0
+    end
+    false
+  end
+  
+  def diagonal?(source, dest)
+    # no coord pairs remain the same
+    source.each_index do |idx|
+      return false unless source[idx] - dest[idx] != 0
+    end
+    true
   end
   
   def parse(raw_maze)
@@ -88,6 +105,15 @@ class MazeSolver
     open_list.delete(location)
     closed_list << location
   end
+    
+  
+  def choose_next_cell
+    calculate_movement_costs(open_list)
+  end
+  
+  def calculate_movement_costs(cells)
+    
+  end
   
 end
 
@@ -96,3 +122,10 @@ test = MazeSolver.new
 test.display
 test.initial_pathfind
 test.listing
+puts
+puts test.ortho?([5, 5], [4, 4]) #false
+puts test.ortho?([5, 5], [4, 5])  #true
+puts test.ortho?([5, 5], [5, 4])  #true
+puts test.diagonal?([5, 5], [4, 5]) #false
+puts test.diagonal?([5, 5], [4, 4]) #true
+puts test.diagonal?([5, 5], [6, 4]) #true
