@@ -47,9 +47,9 @@ class MazeSolver
   
   def display
     maze.each {|line| puts line.join}
-    #puts "start location is #{start}"
-    #puts "ending location is #{finish}"
-    #puts "current location is #{@location}"
+    puts "start location is #{start}"
+    puts "ending location is #{finish}"
+    puts "current location is #{@location}"
   end
   
   def listing
