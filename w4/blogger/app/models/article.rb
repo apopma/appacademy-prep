@@ -5,6 +5,7 @@ class Article < ActiveRecord::Base
   has_attached_file :image, styles: {medium: "300x300>", thumb: "100x100>"}
   validates_attachment_content_type :image, :content_type =>
     ["image/jpg", "image/jpeg", "image/png"]
+    # ask linda about Attachment model later
 
   def tag_list
     tags.collect {|tag| tag.name}.join(", ")
