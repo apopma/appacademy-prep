@@ -11,11 +11,12 @@
 
 <h3>Comments (<%= @article.comments.size %>)</h3>
 <%= render partial: 'articles/comment', collection: @article.comments %>
-
 <%= render partial: 'comments/form' %>
-<%= link_to "<< Back to Articles List", articles_path %>
-<br>
-<%= link_to "Edit this article", edit_article_path(@article) %>
-<br>
-<%= link_to "Delete this article", article_path(@article),
-    method: :delete, data: {confirm: "Really delete the article?"} %>
+
+<%= link_to "<< Back to Articles List", articles_path %><br>
+
+<% if logged_in? %>
+  <%= link_to "Edit this article", edit_article_path(@article) %><br>
+  <%= link_to "Delete this article", article_path(@article),
+      method: :delete, data: {confirm: "Really delete the article?"} %>
+<% end %>
